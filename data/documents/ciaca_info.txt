@@ -1,0 +1,5 @@
+El CIACA es el Centro de Inteligencia Artificial y Analítica para la Convivencia de Antioquia.
+Fue creado por la Gobernación de Antioquia para mejorar la seguridad y convivencia.
+Usa datos y modelos de IA para apoyar decisiones en seguridad pública, salud y educación.
+El CIACA trabaja con datos de múltiples fuentes para generar análisis y predicciones.
+Los principales proyectos del CIACA incluyen análisis de criminalidad, movilidad urbana y salud pública.
