@@ -87,6 +87,8 @@ ciaca-assistant/
 └── ciaca.service
 ```
 
+![Arquitectura CIACA](architecture.png)
+
 ## ⚙️ Decisiones técnicas
 
 - **LLM:** Groq API con modelo llama-3.1-8b-instant (gratis, baja latencia ~0.7s)
