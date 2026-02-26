@@ -71,20 +71,25 @@ docker-compose up --build
 ## 🏗️ Arquitectura
 ```
 ciaca-assistant/
-├── backend/          # FastAPI + LLM + RAG
-│   ├── main.py       # API principal
-│   ├── chat.py       # Chat con Groq
-│   ├── rag.py        # RAG con documentos
-│   ├── database.py   # SQLite + MongoDB
-│   └── tests.py      # Pruebas unitarias
-├── frontend/         # Streamlit UI
-│   └── app.py        # Interfaz completa
+├── backend/                  # FastAPI + LLM + RAG
+│   ├── main.py               # API principal con todos los endpoints
+│   ├── chat.py               # Chat con Groq y streaming
+│   ├── rag.py                # RAG con carga dinámica de documentos
+│   ├── database.py           # SQLite + MongoDB
+│   ├── etl.py                # Pipeline de datos
+│   ├── schema.sql            # Esquema y consultas SQL
+│   ├── mongo_queries.py      # Consultas MongoDB
+│   └── tests.py              # Pruebas unitarias
+├── frontend/                 # Streamlit UI
+│   └── app.py                # Interfaz completa
 ├── data/
-│   └── documents/    # PDFs y TXTs para RAG
-├── exports/          # Reportes generados
-├── docker-compose.yml
-├── setup_linux.sh
-└── ciaca.service
+│   └── documents/            # PDFs y TXTs para RAG
+├── exports/                  # Reportes CSV y PNG generados
+├── docker-compose.yml        # Orquestación de contenedores
+├── setup_linux.sh            # Script instalación Ubuntu Server
+├── ciaca.service             # Servicio systemd para Linux
+├── architecture.png          # Diagrama de arquitectura
+└── design.pdf                # Documento de decisiones técnicas
 ```
 
 ![Arquitectura CIACA](architecture.png)
@@ -93,6 +98,8 @@ ciaca-assistant/
 
 - **LLM:** Groq API con modelo llama-3.1-8b-instant (gratis, baja latencia ~0.7s)
 - **RAG:** Búsqueda por palabras clave con chunks de 500 caracteres
+- **Carga dinámica:** Los usuarios pueden subir PDFs y TXTs directamente desde la interfaz para consultarlos en el RAG
+- **Streaming:** Las respuestas del chat general aparecen en tiempo real letra por letra
 - **Embeddings:** Búsqueda léxica simple (sin vectores) para reducir costo
 - **Base de datos:** SQLite para datos relacionales, MongoDB para logs
 - **Frontend:** Streamlit por simplicidad y rapidez de desarrollo
@@ -103,16 +110,16 @@ ciaca-assistant/
 - Backend (FastAPI + LLM + RAG): 3 horas
 - Frontend (Streamlit): 2 horas
 - Docker + Scripts: 1 hora
-- README + Tests: 1 hora
+- Documentación + Tests: 1 hora
 - **Total: ~7 horas**
 
 ## 🔄 Segunda iteración
 
 - Embeddings reales con ChromaDB
-- Streaming de respuestas
 - Autenticación JWT completa
 - CI/CD con GitHub Actions
 - Nginx como reverse proxy
+- Base de datos vectorial para persistir el índice RAG
 
 ## 📄 Licencia
 

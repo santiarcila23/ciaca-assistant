@@ -7,7 +7,7 @@ from datetime import datetime, timedelta  # Para manejar fechas en los filtros
 import random                   # Para generar datos de ejemplo en la analítica
 import os                       # Para manejar rutas de archivos
 
-# ─── Configuración global ─────────────────────────────
+#Configuración global 
 # URL del backend FastAPI
 API_URL = "http://localhost:8000"
 # Token de autenticación que se envía en cada petición al backend
@@ -23,8 +23,8 @@ st.set_page_config(
     initial_sidebar_state="expanded" # El sidebar aparece abierto por defecto
 )
 
-# ─── Estilos CSS personalizados ───────────────────────
-# Inyecta CSS directamente en la página para personalizar el diseño
+# Estilos CSS personalizados
+
 st.markdown("""
 <style>
     .main-header {
@@ -44,7 +44,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ─── Header principal ─────────────────────────────────
+#Header principal 
 # Muestra el banner azul con el nombre y descripción del sistema
 st.markdown("""
 <div class="main-header">
@@ -53,7 +53,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ─── Sidebar (menú lateral) ───────────────────────────
+# Sidebar (menú lateral) 
 with st.sidebar:
     # Muestra el logo de la Gobernación de Antioquia
     st.image(r"C:\Users\sanre\ciaca-assistant\logo_gobernacion.png")
@@ -68,6 +68,7 @@ with st.sidebar:
 # ══════════════════════════════════════════════════════
 # PÁGINA 1: CHAT
 # ══════════════════════════════════════════════════════
+
 if pagina == "💬 Chat IA":
     st.header("💬 Asistente CIACA")
     
@@ -181,6 +182,7 @@ if pagina == "💬 Chat IA":
 # ══════════════════════════════════════════════════════
 # PÁGINA 2: ANALÍTICA
 # ══════════════════════════════════════════════════════
+
 elif pagina == "📊 Analítica":
     st.header("📊 Dashboard Analítico")
     
@@ -201,7 +203,8 @@ elif pagina == "📊 Analítica":
 
     df = generar_datos()  # Carga o genera los datos
     
-    # ─── Filtros ──────────────────────────────────────
+    #Filtros 
+
     st.subheader("Filtros")
     col1, col2, col3 = st.columns(3)  # Divide la pantalla en 3 columnas
     
@@ -227,7 +230,7 @@ elif pagina == "📊 Analítica":
         (df["categoria"].isin(categorias_sel if categorias_sel else df["categoria"].unique()))
     ]
     
-    # ─── Métricas resumen ─────────────────────────────
+    #Métricas resumen
     # Muestra 4 tarjetas con estadísticas del período filtrado
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Eventos", df_filtrado["eventos"].sum())
@@ -237,7 +240,7 @@ elif pagina == "📊 Analítica":
     
     st.markdown("---")
     
-    # ─── Gráfico 1: Serie temporal ────────────────────
+    #Gráfico 1: Serie temporal 
     st.subheader("Serie Temporal de Eventos")
     # Agrupa por fecha sumando todos los eventos de ese día
     df_agrupado = df_filtrado.groupby("fecha")["eventos"].sum().reset_index()
@@ -250,7 +253,8 @@ elif pagina == "📊 Analítica":
     fig1.update_layout(plot_bgcolor="white")  # Fondo blanco
     st.plotly_chart(fig1, use_container_width=True)  # Ocupa todo el ancho
     
-    # ─── Gráfico 2: Ranking por categoría ─────────────
+    #Gráfico 2: Ranking por categoría 
+
     st.subheader("Ranking por Categoría")
     # Agrupa por categoría sumando todos sus eventos
     df_categoria = df_filtrado.groupby("categoria")["eventos"].sum().reset_index()
@@ -267,7 +271,8 @@ elif pagina == "📊 Analítica":
     fig2.update_layout(plot_bgcolor="white")
     st.plotly_chart(fig2, use_container_width=True)
     
-    # ─── Exportar ─────────────────────────────────────
+    #Exportar 
+
     st.markdown("---")
     st.subheader("📥 Exportar")
     col1, col2 = st.columns(2)
@@ -302,6 +307,7 @@ elif pagina == "📊 Analítica":
 # ══════════════════════════════════════════════════════
 # PÁGINA 3: ADMINISTRACIÓN
 # ══════════════════════════════════════════════════════
+
 elif pagina == "⚙️ Administración":
     st.header("⚙️ Panel de Administración")
     

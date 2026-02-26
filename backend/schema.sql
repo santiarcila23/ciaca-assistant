@@ -1,6 +1,5 @@
 -- ═══════════════════════════════════════════
--- CIACA - Schema SQL
--- Base de datos SQLite con 3 tablas principales
+-- CIACA - Schema SQL Base de datos SQLite 
 -- ═══════════════════════════════════════════
 
 -- Tabla de usuarios: guarda las credenciales de acceso al sistema
