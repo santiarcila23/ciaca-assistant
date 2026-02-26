@@ -63,6 +63,31 @@ if pagina == "💬 Chat IA":
     st.header("💬 Asistente CIACA")
     
     modo = st.radio("Modo:", ["Chat General", "Chat con Documentos (RAG)"], horizontal=True)
+    # Carga de documentos para RAG
+    if modo == "Chat con Documentos (RAG)":
+            st.subheader("📁 Cargar documentos")
+            archivo = st.file_uploader("Sube un PDF o TXT", type=["pdf", "txt"])
+            
+            if archivo is not None:
+                carpeta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "documents")
+                os.makedirs(carpeta, exist_ok=True)
+                ruta = os.path.join(carpeta, archivo.name)
+                
+                with open(ruta, "wb") as f:
+                    f.write(archivo.getbuffer())
+                
+                try:
+                    resp = requests.post(
+                        f"{API_URL}/indexar-documento",
+                        json={"nombre": archivo.name},
+                        headers=HEADERS
+                    )
+                    if resp.status_code == 200:
+                        st.success(f"✅ {archivo.name} cargado e indexado!")
+                    else:
+                        st.error("Error indexando el documento")
+                except Exception as e:
+                    st.error(f"Error: {e}")
     
     if "mensajes" not in st.session_state:
         st.session_state.mensajes = []

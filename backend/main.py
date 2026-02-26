@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from database import init_db, init_mongo, get_sql_connection, get_mongo_db
 from chat import chat_simple
-from rag import chat_con_rag, cargar_documentos_folder, documentos_indexados
+from rag import chat_con_rag, cargar_documentos_folder, documentos_indexados, indexar_documento as indexar_documento_rag
 
 load_dotenv()
 
@@ -122,3 +122,17 @@ def docs_indexados(authorization: str = Header(None)):
     verificar_token(authorization)
     fuentes = list(set([d["fuente"] for d in documentos_indexados]))
     return {"documentos": fuentes, "total_chunks": len(documentos_indexados)}
+
+class DocumentoInput(BaseModel):
+    nombre: str
+
+@app.post("/indexar-documento")
+def indexar_documento(body: DocumentoInput, authorization: str = Header(None)):
+    verificar_token(authorization)
+    ruta = f"../data/documents/{body.nombre}"
+    exito = indexar_documento_rag(ruta, body.nombre)
+    if exito:
+        return {"mensaje": f"✅ {body.nombre} indexado correctamente"}
+    else:
+        raise HTTPException(status_code=400, detail="Error indexando documento")
+    
