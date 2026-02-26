@@ -1,5 +1,22 @@
+# Dockerfile.frontend
+# Instrucciones para construir el contenedor del frontend
+
+# Usa Python 3.11 versión slim (liviana, sin programas extra innecesarios)
 FROM python:3.11-slim
+
+# Define /app como la carpeta de trabajo dentro del contenedor
 WORKDIR /app
+
+# Instala las librerías necesarias para el frontend
+# streamlit - para la interfaz web
+# requests - para comunicarse con el backend
+# pandas - para manipular los datos en la analítica
+# plotly - para los gráficos interactivos
 RUN pip install --no-cache-dir streamlit requests pandas plotly
+
+# Copia todo el código del frontend al contenedor
 COPY . .
+
+# Comando que se ejecuta cuando arranca el contenedor
+# Inicia Streamlit en el puerto 8501 accesible desde cualquier IP
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

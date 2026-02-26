@@ -1,41 +1,50 @@
+# docker-compose.yml
+# Con un solo comando "docker-compose up --build" levanta toda la aplicación
+
 version: "3.8"
 
 services:
-  mongodb:
-    image: mongo:6
-    container_name: ciaca_mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
 
+  # BASE DE DATOS - MongoDB
+  mongodb:
+    image: mongo:6              # Descarga MongoDB versión 6 de internet
+    container_name: ciaca_mongo # Le ponemos este nombre al contenedor
+    ports:
+      - "27017:27017"           # Abre el puerto para que el backend pueda conectarse
+    volumes:
+      - mongo_data:/data/db     # Guarda los datos aquí para no perderlos al apagar
+
+  # BACKEND - API FastAPI
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
+      context: ./backend            # Busca el código en la carpeta backend
+      dockerfile: Dockerfile.backend # Sigue las instrucciones de este archivo para construirlo
     container_name: ciaca_backend
     ports:
-      - "8000:8000"
+      - "8000:8000"             # La API queda disponible en localhost:8000
     environment:
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - GROQ_MODEL=${GROQ_MODEL}
-      - APP_TOKEN=${APP_TOKEN}
-      - MONGO_URI=mongodb://mongodb:27017
-      - DB_NAME=${DB_NAME}
+      # Estas variables las lee del archivo .env
+      - GROQ_API_KEY=${GROQ_API_KEY}      # Llave para usar la IA de Groq
+      - GROQ_MODEL=${GROQ_MODEL}          # Qué modelo de IA usar
+      - APP_TOKEN=${APP_TOKEN}            # Contraseña para proteger la API
+      - MONGO_URI=mongodb://mongodb:27017 # Dirección de MongoDB dentro de Docker
+      - DB_NAME=${DB_NAME}                # Nombre de la base de datos
     depends_on:
-      - mongodb
+      - mongodb                 # Espera a que MongoDB esté listo antes de arrancar
     volumes:
-      - ./data:/app/data
+      - ./data:/app/data        # Comparte la carpeta de documentos con el contenedor
 
+  # FRONTEND - Interfaz Streamlit
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend           # Busca el código en la carpeta frontend
       dockerfile: Dockerfile.frontend
     container_name: ciaca_frontend
     ports:
-      - "8501:8501"
+      - "8501:8501"             # La interfaz queda disponible en localhost:8501
     depends_on:
-      - backend
+      - backend                 # Espera a que el backend esté listo antes de arrancar
 
+# Aquí se guardan los datos de MongoDB para que no se pierdan al reiniciar
 volumes:
   mongo_data:

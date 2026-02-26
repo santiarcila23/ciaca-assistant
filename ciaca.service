@@ -1,17 +1,45 @@
+# ciaca.service
+# Plantilla de servicio systemd para correr el backend automáticamente en Linux
+# Para instalarlo en el servidor:
+#   sudo cp ciaca.service /etc/systemd/system/
+#   sudo systemctl enable ciaca
+#   sudo systemctl start ciaca
+
 [Unit]
+# Nombre descriptivo del servicio que aparece en los logs del sistema
 Description=CIACA Assistant API
+
+# El servicio arranca después de que la red y MongoDB estén listos
 After=network.target mongodb.service
 
 [Service]
+# El proceso corre en primer plano sin bifurcarse (ideal para uvicorn)
 Type=simple
+
+# El servicio corre con el usuario ubuntu para no usar permisos de root
 User=ubuntu
+
+# Carpeta desde donde se ejecuta el servidor
 WorkingDirectory=/opt/ciaca-assistant/backend
+
+# Agrega el entorno virtual al PATH para que use las librerías instaladas ahí
 Environment=PATH=/opt/ciaca-assistant/venv/bin
+
+# Comando que inicia el servidor FastAPI en todas las IPs en el puerto 8000
 ExecStart=/opt/ciaca-assistant/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+
+# Si el servidor se cae lo reinicia automáticamente
 Restart=always
+
+# Espera 10 segundos antes de intentar reiniciar
 RestartSec=10
+
+# Guarda los mensajes normales del servidor en este archivo de log
 StandardOutput=append:/var/log/ciaca/app.log
+
+# Guarda los errores del servidor en este archivo separado
 StandardError=append:/var/log/ciaca/error.log
 
 [Install]
+# El servicio arranca automáticamente cuando el servidor Linux inicia
 WantedBy=multi-user.target

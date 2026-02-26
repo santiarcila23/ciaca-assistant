@@ -1,6 +1,23 @@
+# Dockerfile.backend
+# Instrucciones para construir el contenedor del backend
+
+# Usa Python 3.11 versión slim (liviana, sin programas extra innecesarios)
 FROM python:3.11-slim
+
+# Define /app como la carpeta de trabajo dentro del contenedor
 WORKDIR /app
+
+# Copia solo el archivo de dependencias primero
+# Esto aprovecha el caché de Docker para no reinstalar librerías si no cambiaron
 COPY requirements.txt .
+
+# Instala todas las librerías listadas en requirements.txt
+# --no-cache-dir evita guardar archivos temporales para que el contenedor pese menos
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia todo el código del backend al contenedor
 COPY . .
+
+# Comando que se ejecuta cuando arranca el contenedor
+# Inicia el servidor FastAPI en el puerto 8000 accesible desde cualquier IP
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
