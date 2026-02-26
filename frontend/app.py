@@ -49,7 +49,7 @@ st.markdown("""
 
 # ─── Sidebar ──────────────────────────────────────────
 with st.sidebar:
-    st.image("C\Users\sanre\ciaca-assistant\logo_gobernacion.png", width=100)
+    st.image(r"C:\Users\sanre\ciaca-assistant\logo_gobernacion.png", )
     st.title("Navegación")
     pagina = st.radio("Ir a:", ["💬 Chat IA", "📊 Analítica", "⚙️ Administración"])
     st.markdown("---")
