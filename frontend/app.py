@@ -215,15 +215,23 @@ elif pagina == "📊 Analítica":
         st.download_button("⬇️ Descargar CSV", csv, "reporte_ciaca.csv", "text/csv")
     
     with col2:
-        os.makedirs("../exports", exist_ok=True)
-        if st.button("💾 Guardar PNG del gráfico"):
-          try:
-                os.makedirs("exports", exist_ok=True)
-                fig1.write_image("exports/grafico_principal.png")
-                df_filtrado.to_csv("exports/reporte.csv", index=False)
-                st.success("✅ Exportado a carpeta exports/")
-          except Exception as e:
-            st.error(f"Error: {e}")
+            if st.button("💾 Guardar PNG del gráfico"):
+                try:
+                    import plotly.io as pio
+                    carpeta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "exports")
+                    os.makedirs(carpeta, exist_ok=True)
+                    ruta_png = os.path.join(carpeta, "grafico_principal.png")
+                    ruta_csv = os.path.join(carpeta, "reporte.csv")
+                    try:
+                        pio.write_image(fig2, ruta_png, width=1200, height=600, engine="kaleido")
+                        st.success("✅ PNG guardado correctamente!")
+                    except:
+                        ruta_html = os.path.join(carpeta, "grafico_principal.html")
+                        fig2.write_html(ruta_html)
+                        df_filtrado.to_csv(ruta_csv, index=False)
+                        st.success("✅ Gráfico guardado como HTML en exports/")
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
 # ══════════════════════════════════════════════════════
 # PÁGINA 3: ADMINISTRACIÓN
