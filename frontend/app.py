@@ -49,7 +49,7 @@ st.markdown("""
 
 # ─── Sidebar ──────────────────────────────────────────
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Escudo_de_Antioquia.svg/200px-Escudo_de_Antioquia.svg.png", width=100)
+    st.image("C\Users\sanre\ciaca-assistant\logo_gobernacion.png", width=100)
     st.title("Navegación")
     pagina = st.radio("Ir a:", ["💬 Chat IA", "📊 Analítica", "⚙️ Administración"])
     st.markdown("---")
