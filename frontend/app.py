@@ -84,16 +84,26 @@ if pagina == "💬 Chat IA":
             with st.spinner("Pensando..."):
                 try:
                     if modo == "Chat General":
-                        resp = requests.post(
-                            f"{API_URL}/chat",
+                        import json as json_lib
+                        placeholder = st.empty()
+                        respuesta = ""
+    
+                        with requests.post(
+                            f"{API_URL}/chat/stream",
                             json={"mensaje": prompt, "usuario": "admin"},
-                            headers=HEADERS
-                        )
-                        data = resp.json()
-                        respuesta = data.get("respuesta", "Error")
+                            headers=HEADERS,
+                            stream=True
+                        ) as resp:
+                         for line in resp.iter_lines():
+                             if line:
+                                 line = line.decode("utf-8")
+                                 if line.startswith("data: ") and line != "data: [DONE]":
+                                     data = json_lib.loads(line[6:])
+                                     respuesta += data.get("texto", "")
+                                     placeholder.write(respuesta)
+    
                         fuentes = []
-                        st.write(respuesta)
-                        st.caption(f"⏱️ {data.get('latencia', 0)}s | 🔢 {data.get('tokens', 0)} tokens")
+                        st.caption("✅ Respuesta completada")
                     else:
                         resp = requests.post(
                             f"{API_URL}/rag",
@@ -207,9 +217,13 @@ elif pagina == "📊 Analítica":
     with col2:
         os.makedirs("../exports", exist_ok=True)
         if st.button("💾 Guardar PNG del gráfico"):
-            fig1.write_image("../exports/grafico_principal.png")
-            df_filtrado.to_csv("../exports/reporte.csv", index=False)
-            st.success("✅ Exportado a carpeta exports/")
+          try:
+                os.makedirs("exports", exist_ok=True)
+                fig1.write_image("exports/grafico_principal.png")
+                df_filtrado.to_csv("exports/reporte.csv", index=False)
+                st.success("✅ Exportado a carpeta exports/")
+          except Exception as e:
+            st.error(f"Error: {e}")
 
 # ══════════════════════════════════════════════════════
 # PÁGINA 3: ADMINISTRACIÓN

@@ -64,6 +64,37 @@ def chat(body: MensajeChat, authorization: str = Header(None)):
     
     return resultado
 
+from fastapi.responses import StreamingResponse as FastAPIStreaming
+import json
+
+@app.post("/chat/stream")
+async def chat_stream(body: MensajeChat, authorization: str = Header(None)):
+    verificar_token(authorization)
+    
+    def generar():
+        from groq import Groq
+        import os
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        
+        stream = client.chat.completions.create(
+            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            messages=[
+                {"role": "system", "content": "Eres un asistente del CIACA, Gobernación de Antioquia. Respondes en español."},
+                {"role": "user", "content": body.mensaje}
+            ],
+            max_tokens=1024,
+            stream=True
+        )
+        
+        for chunk in stream:
+            if chunk.choices[0].delta.content:
+                texto = chunk.choices[0].delta.content
+                yield f"data: {json.dumps({'texto': texto})}\n\n"
+        
+        yield "data: [DONE]\n\n"
+    
+    return FastAPIStreaming(generar(), media_type="text/event-stream")
+
 @app.post("/rag")
 def rag(body: MensajeRAG, authorization: str = Header(None)):
     verificar_token(authorization)
